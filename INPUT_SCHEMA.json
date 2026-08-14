@@ -1,0 +1,201 @@
+{
+    "title": "AI Search Share-of-Voice Monitor — Notion-driven",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "notionConnector": {
+            "title": "Notion connector — monitoring pack + timeline (read + write)",
+            "type": "string",
+            "description": "Connector used to (1) READ your monitoring pack — the prompts, brand, competitors, and domain that drive the scrape — and (2) WRITE dated timeline rows back after each run. Your Notion token never reaches this Actor: the Apify proxy injects it server-side.",
+            "resourceType": "mcpConnector",
+            "editor": "resourcePicker",
+            "mcpServers": [
+                {
+                    "url": "https://mcp.notion.com/*",
+                    "tools": {
+                        "required": ["*"]
+                    }
+                }
+            ],
+            "sectionCaption": "MCP connectors",
+            "sectionDescription": "The Actor reads your monitoring configuration FROM Notion, scrapes AI engines, and writes the results BACK to Notion. This is the two-way connector loop — without it, you are re-entering prompts by hand every run and exporting CSVs."
+        },
+        "slackConnector": {
+            "title": "Slack connector — SoV drop alerts (write)",
+            "type": "string",
+            "description": "Optional. Dispatches an alert card to Slack when Share-of-Voice drops by more than the configured threshold between runs.",
+            "resourceType": "mcpConnector",
+            "editor": "resourcePicker",
+            "mcpServers": [
+                {
+                    "url": "https://mcp.slack.com/*",
+                    "tools": {
+                        "required": ["*"]
+                    }
+                }
+            ]
+        },
+
+        "runMode": {
+            "title": "Run mode",
+            "type": "string",
+            "description": "Leave as 'analyse'. Set to 'discover' only when connecting a new MCP server for the first time: it prints every tool the connector exposes, then exits without scraping anything.",
+            "editor": "hidden",
+            "default": "analyse"
+        },
+
+        "monitoringDatabaseId": {
+            "title": "Monitoring pack database ID",
+            "type": "string",
+            "description": "The 32-character ID from your Notion monitoring pack database URL. This database has rows with Type (Prompt, Brand, Domain, Competitor) and Value columns. See the README for the template.",
+            "editor": "textfield",
+            "example": "1f2a3b4c5d6e7f8090a1b2c3d4e5f607",
+            "sectionCaption": "Notion databases",
+            "sectionDescription": "Two Notion databases drive this Actor. The monitoring pack decides WHAT to scrape. The timeline stores WHERE results go. Both database templates are linked in the README."
+        },
+        "timelineDatabaseId": {
+            "title": "SoV timeline database ID",
+            "type": "string",
+            "description": "The 32-character ID from your Notion SoV timeline database URL. Each run appends a row with the date, SoV%, CDS%, RPS, and prompt count.",
+            "editor": "textfield",
+            "example": "607f5e4d3c2b1a0908f7e6d5c4b3a2f1"
+        },
+
+        "brandName": {
+            "title": "Brand name (override)",
+            "type": "string",
+            "description": "⚠️ Overrides whatever the Notion monitoring pack says. Use only for testing without a connector, or to force a brand name for a single run. In production, this lives in Notion as a row with Type = Brand.",
+            "editor": "textfield",
+            "sectionCaption": "Manual overrides",
+            "sectionDescription": "These fields override your Notion monitoring pack. In normal use, leave them empty — your prompts, brand, domain, and competitors all live in Notion. Use these only for testing without a connector."
+        },
+        "domain": {
+            "title": "Domain (override)",
+            "type": "string",
+            "description": "⚠️ Overrides Notion. Use only for testing.",
+            "editor": "textfield"
+        },
+        "prompts": {
+            "title": "Prompts (override)",
+            "type": "array",
+            "description": "⚠️ Overrides Notion. Commercial search queries to track. In production, these are rows with Type = Prompt in your Notion monitoring pack.",
+            "editor": "stringList",
+            "default": []
+        },
+        "competitors": {
+            "title": "Competitors (override)",
+            "type": "array",
+            "description": "⚠️ Overrides Notion. Competing brand names to benchmark against.",
+            "editor": "stringList",
+            "default": []
+        },
+
+        "engines": {
+            "title": "AI search engines to monitor",
+            "type": "array",
+            "description": "Which AI engines to query. Google AI Overviews is enabled by default and requires NO API key. Perplexity, ChatGPT, OpenAI GPT-OSS on Groq, Groq Compound, and xAI Grok require their respective API keys.",
+            "editor": "select",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "google_ai_overview",
+                    "perplexity",
+                    "openai_chatgpt",
+                    "openai_groq_oss",
+                    "groq_compound",
+                    "xai_grok"
+                ]
+            },
+            "default": ["google_ai_overview", "perplexity"],
+            "sectionCaption": "Scraping configuration"
+        },
+        "country": {
+            "title": "Target country (e.g. US, UK, DE)",
+            "type": "string",
+            "description": "Two-letter country code(s) (e.g. US or US, UK, DE for multi-country). Leave default for Global (all regions).",
+            "prefill": "Global (all regions)",
+            "default": "Global (all regions)",
+            "editor": "textfield"
+        },
+        "language": {
+            "title": "Target language (e.g. en, es, de)",
+            "type": "string",
+            "description": "Two-letter language code(s) (e.g. en or en, es, de for multi-language).",
+            "prefill": "en",
+            "default": "en",
+            "editor": "textfield"
+        },
+        "proxyConfiguration": {
+            "title": "Proxy configuration",
+            "type": "object",
+            "description": "Residential proxies used for web scraping engines.",
+            "editor": "proxy",
+            "default": {
+                "useApifyProxy": true,
+                "apifyProxyGroups": ["RESIDENTIAL"]
+            }
+        },
+
+        "perplexityApiKey": {
+            "title": "Perplexity API Key (optional)",
+            "type": "string",
+            "description": "Recommended for Perplexity AI. Uses Perplexity's official Sonar Pro model with zero Cloudflare block risk.",
+            "editor": "textfield",
+            "isSecret": true,
+            "sectionCaption": "API Credentials"
+        },
+        "openaiApiKey": {
+            "title": "OpenAI API Key (optional)",
+            "type": "string",
+            "description": "Required ONLY if 'ChatGPT / OpenAI' is selected under AI engines to monitor.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "xaiApiKey": {
+            "title": "xAI Grok API Key (optional)",
+            "type": "string",
+            "description": "Required ONLY if 'xAI Grok' is selected under AI engines to monitor.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "groqApiKey": {
+            "title": "Groq API Key (optional)",
+            "type": "string",
+            "description": "Powers both 'Groq Compound' and 'OpenAI GPT-OSS on Groq' engine options.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+
+        "dryRun": {
+            "title": "Dry run — scrape and score but do not write",
+            "type": "boolean",
+            "description": "Runs the full read → scrape → score pipeline and logs exactly what would be written to Notion and Slack, without touching either. Use this on your first run.",
+            "default": true,
+            "sectionCaption": "Write-back controls"
+        },
+        "slackChannel": {
+            "title": "Slack alert channel",
+            "type": "string",
+            "description": "Slack channel for SoV drop alerts. Include the # prefix.",
+            "editor": "textfield",
+            "default": "#sov-alerts"
+        },
+        "sovDropThreshold": {
+            "title": "SoV drop alert threshold (%)",
+            "type": "integer",
+            "description": "Dispatch a Slack alert when SoV drops by this many percentage points between runs. Set higher to reduce noise from minor variance.",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 5
+        },
+
+        "debugMode": {
+            "title": "Detailed logging",
+            "type": "boolean",
+            "description": "Adds per-query and per-engine detail lines. Useful when a result looks wrong and you want to see why.",
+            "default": false,
+            "sectionCaption": "Troubleshooting"
+        }
+    },
+    "required": ["notionConnector", "monitoringDatabaseId", "timelineDatabaseId"]
+}

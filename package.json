@@ -1,0 +1,22 @@
+{
+  "name": "ai-search-sov-monitor",
+  "version": "1.0.0",
+  "description": "Monitors brand citations, recommendation rank, source domain attribution, and share-of-voice across AI search engines (Google AI Overviews, Perplexity, ChatGPT, Grok, Groq). Syncs long-term trend timeline databases to Notion and sends Slack alerts via MCP connectors.",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.0",
+    "apify": "^3.7.2",
+    "cheerio": "^1.0.0",
+    "crawlee": "^3.18.0",
+    "got-scraping": "^3.2.14"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Abhishek Khanra (ishekofficial)",
+  "license": "ISC"
+}

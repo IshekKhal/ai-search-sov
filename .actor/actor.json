@@ -1,0 +1,12 @@
+{
+  "actorSpecification": 1,
+  "name": "ai-search-sov-monitor",
+  "title": "AI Search Share-of-Voice (AEO/GEO) & Citation Monitor",
+  "description": "Monitors brand citations, recommendation rank, source domain attribution, and share-of-voice across AI search engines (Perplexity, Google AI Overviews). Syncs long-term trend timeline databases to Notion and sends Slack alerts via MCP connectors.",
+  "version": "1.0",
+  "buildTag": "latest",
+  "input": "../INPUT_SCHEMA.json",
+  "storages": {
+    "dataset": "./dataset_schema.json"
+  }
+}

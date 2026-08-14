@@ -1,0 +1,13 @@
+{
+    "notionConnector": "notion-sov-monitor",
+    "monitoringDatabaseId": "1f2a3b4c5d6e7f8090a1b2c3d4e5f607",
+    "timelineDatabaseId": "607f5e4d3c2b1a0908f7e6d5c4b3a2f1",
+    "slackConnector": "",
+    "engines": ["google_ai_overview", "perplexity"],
+    "country": "US",
+    "language": "en",
+    "dryRun": true,
+    "sovDropThreshold": 5,
+    "slackChannel": "#sov-alerts",
+    "debugMode": false
+}

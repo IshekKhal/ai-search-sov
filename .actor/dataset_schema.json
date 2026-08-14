@@ -1,0 +1,66 @@
+{
+  "actorSpecification": 1,
+
+  "fields": {
+    "title": "AI Search Share-of-Voice Dataset Schema",
+    "type": "object",
+    "properties": {
+      "timestamp": { "type": "string", "format": "date-time" },
+      "engine": { "type": "string" },
+      "prompt": { "type": "string" },
+      "targetBrand": { "type": "string" },
+      "targetDomain": { "type": "string" },
+      "brandMentioned": { "type": "boolean" },
+      "domainCited": { "type": "boolean" },
+      "recommendationRank": { "type": ["integer", "null"] },
+      "citedDomains": { "type": "array", "items": { "type": "string" } },
+      "winningCitationSources": { "type": "array", "items": { "type": "string" } },
+      "competitorsFound": { "type": "array", "items": { "type": "string" } },
+      "displacedByCompetitor": { "type": ["string", "null"] },
+      "sentiment": { "type": "string", "enum": ["Positive", "Neutral", "Negative", "Omitted"] },
+      "featureContext": { "type": "array", "items": { "type": "string" } },
+      "rawResponseExcerpt": { "type": "string" },
+      "engineStatus": { "type": "string" },
+      "responseDurationMs": { "type": "integer" },
+      "searchUrl": { "type": "string" },
+      "hasAiOverview": { "type": ["boolean", "null"] }
+    }
+  },
+
+  "views": {
+    "overview": {
+      "title": "Overview",
+      "transformation": {
+        "fields": [
+          "engine",
+          "prompt",
+          "brandMentioned",
+          "domainCited",
+          "recommendationRank",
+          "sentiment",
+          "competitorsFound",
+          "displacedByCompetitor",
+          "engineStatus",
+          "searchUrl",
+          "hasAiOverview"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "engine": { "label": "Engine" },
+          "prompt": { "label": "Prompt" },
+          "brandMentioned": { "label": "Brand Mentioned", "format": "boolean" },
+          "domainCited": { "label": "Domain Cited", "format": "boolean" },
+          "recommendationRank": { "label": "Rank", "format": "number" },
+          "sentiment": { "label": "Sentiment" },
+          "competitorsFound": { "label": "Competitors Found", "format": "array" },
+          "displacedByCompetitor": { "label": "Displaced By" },
+          "engineStatus": { "label": "Status" },
+          "searchUrl": { "label": "Search URL", "format": "link" },
+          "hasAiOverview": { "label": "Has AI Overview", "format": "boolean" }
+        }
+      }
+    }
+  }
+}
