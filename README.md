@@ -96,19 +96,19 @@ This Actor monitors that visibility on a schedule and alerts your team in Slack 
 
 ## What it looks like
 
-![Monitoring pack in Notion](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/notion-database-ai-search-monitoring-pack-configuration.png)
+![Monitoring pack in Notion](https://raw.githubusercontent.com/IshekKhal/ai-search-sov-monitor/main/assets/notion-database-ai-search-monitoring-pack-configuration.png)
 *Your monitoring pack in Notion. This is the only place you configure target prompts, brand names, and competitors.*
 
-![SoV timeline in Notion](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/notion-database-ai-search-share-of-voice-timeline-history.png)
+![SoV timeline in Notion](https://raw.githubusercontent.com/IshekKhal/ai-search-sov-monitor/main/assets/notion-database-ai-search-share-of-voice-timeline-history.png)
 *Persistent Share-of-Voice timeline in Notion accumulating daily run snapshots with SoV%, CDS%, and RPS metrics.*
 
-![Slack drop alert](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/slack-share-of-voice-drop-alert-notification.png)
+![Slack drop alert](https://raw.githubusercontent.com/IshekKhal/ai-search-sov-monitor/main/assets/slack-share-of-voice-drop-alert-notification.png)
 *Automated Slack alert notification card dispatched to your channel when Share of Voice drops beyond the threshold.*
 
-![Apify Console input](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/apify-console-notion-mcp-connector-input-configuration.png)
+![Apify Console input](https://raw.githubusercontent.com/IshekKhal/ai-search-sov-monitor/main/assets/apify-console-notion-mcp-connector-input-configuration.png)
 *One-click Notion and Slack MCP authorization. No API credentials pasted into code.*
 
-![Drop funnel run log](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/apify-console-ai-search-drop-funnel-telemetry-runlog.png)
+![Drop funnel run log](https://raw.githubusercontent.com/IshekKhal/ai-search-sov-monitor/main/assets/apify-console-ai-search-drop-funnel-telemetry-runlog.png)
 *Terminal drop funnel telemetry and audit summary isolating query health, proxy blocks, and competitor benchmarks.*
 
 ---
