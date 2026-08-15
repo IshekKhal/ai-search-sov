@@ -1,0 +1,24 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "title": "AI Search Share-of-Voice Monitor Output",
+  "properties": {
+    "evaluatedQueries": {
+      "type": "string",
+      "title": "Evaluated Search Queries Dataset",
+      "description": "Dataset containing all prompt × engine evaluations with brand mentions, recommendation rank, citation domain links, competitor displacements, and sentiment.",
+      "template": "{{links.apiDefaultDatasetUrl}}/items"
+    },
+    "runSummary": {
+      "type": "string",
+      "title": "Execution Summary & Scorecard",
+      "description": "Aggregated Share-of-Voice (SoV%), Citation Domain Share (CDS%), Recommendation Position Score (RPS), and competitor benchmarks.",
+      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/RUN_SUMMARY"
+    },
+    "dropFunnel": {
+      "type": "string",
+      "title": "Drop Funnel Telemetry",
+      "description": "Diagnostic counters tracking prompts loaded, queries dispatched, engine blocks, rate limits, and completed evaluations.",
+      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/DROP_FUNNEL"
+    }
+  }
+}

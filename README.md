@@ -1,34 +1,43 @@
-# AI Search Share-of-Voice Monitor
+# AI Search Share-of-Voice Monitor & Notion Pipeline
 
-## Find out whether AI is recommending you or your competitors, before your traffic tells you
+## Find out whether AI search engines are recommending you or your competitors, before your organic traffic tells you
 
-**Your SEO tool tells you where you rank on Google. Nothing tells you whether ChatGPT, Perplexity, or Google AI Overviews are recommending your product.** This queries AI search engines with the commercial prompts your customers actually type, checks whether you get mentioned, and writes a dated scorecard back to your Notion workspace.
+**Your SEO tools tell you where you rank on Google. Nothing tells you whether ChatGPT, Perplexity, Grok, or Google AI Overviews are recommending your product.** This Actor reads your commercial prompts from Notion, queries up to five AI search engines with live web grounding, scores brand mentions and cited domains, and delivers a dated scorecard back to your Notion workspace — with automated Slack alerts when Share of Voice drops.
 
-Tools like Ahrefs and Semrush track traditional search rankings. What they cannot do is ask an AI engine "what is the best web scraping platform?", read the answer, check whether your brand appears, and track that over time in your own workspace without manual spreadsheets. That is what this does.
+Tools like Ahrefs and Semrush track traditional blue links. What they cannot do is ask an AI engine "what is the best web scraping platform?", evaluate whether your brand appears, and track your recommendation rank over time without manual spreadsheets. That is what this Actor does.
 
 ---
 
 ## Why this matters
 
-A buyer types "best enterprise web scraping platform" into Perplexity. It recommends Bright Data and ScraperAPI. Your product is not mentioned. Nobody tells you.
+A buyer asks Perplexity or ChatGPT for the "best workflow automation platform for engineering teams." The model recommends your two main competitors and cites their documentation. Your product is not mentioned at all.
 
-You notice three months later when qualified inbound leads have declined 20%, and by then every competitor has cemented their position in the model's training data and citation habits.
+You notice three months later when qualified inbound trials have dropped 25%, and by then every competitor has cemented their authority in the engine's retrieval corpus and citation habits.
 
-Everything you need to catch this early is observable. Whether the AI mentions your brand. Whether it cites your domain. What rank position you appear at. Whether a competitor displaced you. This monitors it on a schedule and alerts you on Slack the moment your Share-of-Voice drops.
+Everything you need to catch this early is observable:
+- Whether the AI mentions your brand name
+- Whether it cites your official domain in its source footnotes
+- What position you hold in its recommendation list
+- Whether a competitor displaced you from the top spot
+
+This Actor monitors that visibility on a schedule and alerts your team in Slack the moment your Share of Voice dips.
 
 ---
 
 ## Features
 
-- **Reads your monitoring config from Notion**, so you never re-enter prompts, brand names, or competitor lists in a form
-- **Writes a dated timeline row back to Notion** after every run, building a persistent SoV trendline you can chart
-- **Dispatches Slack alerts** when Share-of-Voice drops below a configurable threshold
-- **Tracks three metrics per run**: Share-of-Voice (SoV%), Citation Domain Share (CDS%), Recommendation Position Score (RPS)
-- **Benchmarks you against every named competitor**, so you know who displaced you and by how much
-- **Detects sentiment and context tags** — are you mentioned as "best", "leader", or "expensive", "complex"?
-- **Dry run by default**, so you can read the full report before anything is written anywhere
-- **Never sees your Notion or Slack tokens.** Apify holds them and this Actor is only permitted the tools it declared
-- **Drop funnel logging** from hour one — if a query was blocked or a result was empty, you know exactly why
+- **Your Notion Database Drives the Search**: Keep your target prompts, brand names, and competitor lists in a Notion table your team already manages. The Actor reads it before every run. Change your search strategy in Notion, not in a form.
+- **Multi-Engine Evaluation**: Simultaneously queries **Google AI Overviews**, **Perplexity Sonar**, **OpenAI ChatGPT (GPT-4o)**, **xAI Grok 2**, and **Groq Compound** with live web search grounding.
+- **Three Complementary Metrics**:
+  - **Share of Voice (SoV%)**: Percentage of queries where your brand is recommended by name.
+  - **Citation Domain Share (CDS%)**: Percentage of queries where your official domain is cited as a source link.
+  - **Recommendation Position Score (RPS)**: Weighted score factoring rank placement (Rank 1 = 10 pts, Ranks 2–3 = 7 pts, other = 4 pts).
+- **Competitor Benchmarking**: Automatically calculates comparative SoV% and displacement deltas against every named competitor.
+- **Delivered to Your Notion Pipeline, Not a Dead File**: Each run writes a dated snapshot row directly into your Notion timeline database, building an automated historical trendline you can chart.
+- **Smart Slack Drop Alerts**: Dispatches a formatted notification card to Slack *only* when Share of Voice drops beyond your configured threshold (e.g. -5%), preventing channel alert fatigue.
+- **Never Sees Your Tokens**: Inbound MCP connectors route through Apify's secure sidecar proxy. Your Notion and Slack credentials are never exposed to Actor code.
+- **Drop Funnel Telemetry**: Logs full request dispatch counters (`promptsLoaded`, `queriesDispatched`, `queriesBlocked`, `queriesSucceeded`) so you always know whether low scores stem from visibility shifts or proxy blocks.
+- **Dry Run by Default**: Test prompts and inspect scoring scorecards in the run log before writing anything to Notion or Slack.
 
 ---
 
@@ -42,131 +51,139 @@ Everything you need to catch this early is observable. Whether the AI mentions y
 | :--- | :--- |
 | Apify | Brand |
 | apify.com | Domain |
-| best enterprise web scraping platform | Prompt |
+| best web scraping platform 2026 | Prompt |
 | top data extraction tools for developers | Prompt |
-| best alternative to Bright Data | Prompt |
-| best web scraping API 2026 | Prompt |
+| web scraping API comparison | Prompt |
 | Bright Data | Competitor |
 | ScraperAPI | Competitor |
-| Octoparse | Competitor |
+| Oxylabs | Competitor |
 
-Columns: `Value` (Title), `Type` (Select).
-
-Create the Select options by hand: click the Type cell, type `Prompt`, press Enter. Repeat for `Brand`, `Domain`, `Competitor`. You need exactly one Brand row and one Domain row. Add as many Prompts and Competitors as you want.
+*Columns: `Value` (Title), `Type` (Select with options `Brand`, `Domain`, `Prompt`, `Competitor`). You need exactly one Brand row and one Domain row. Add as many Prompts and Competitors as you want.*
 
 **SoV Timeline**: where results land after every run:
 
 `Brand` (Title) · `Date` (Date) · `SoV` (Number) · `CDS` (Number) · `RPS` (Number) · `Prompts Tracked` (Number) · `Brand Mentions` (Number) · `Competitor SoV` (Text) · `Top Citation Sources` (Text)
 
-> Use **Number** for all metric columns, not Text. Number columns chart properly in Notion. Leave this database empty — the Actor fills it.
+> Use **Number** for metric columns (`SoV`, `CDS`, `RPS`, `Prompts Tracked`, `Brand Mentions`). Number columns chart natively in Notion. Leave this database empty — the Actor populates it automatically.
 
-### 2. Connect Notion
+---
 
-In Apify Console → **Settings → MCP connectors → Add connector** → enter `https://mcp.notion.com/mcp` → authorize and grant access to both databases. That's the only setup step.
+### 2. Connect Notion and Slack MCP connectors
 
-### 3. (Optional) Connect Slack for drop alerts
+1. In Apify Console → **Settings → MCP connectors → Add connector**.
+2. For Notion: enter `https://mcp.notion.com/mcp` → authorize and grant access to both databases.
+3. For Slack *(Optional)*: enter `https://mcp.slack.com/mcp` → authorize with your Slack workspace and select `#sov-alerts`.
 
-In Apify Console → **Settings → MCP connectors → Add connector** → enter `https://mcp.slack.com/mcp` → authorize with your Slack workspace. You do NOT need a Slack app or bot. Skip this step if you don't want alerts — the Actor works fine without Slack.
+---
 
-### 4. Configure and run
+### 3. Configure and run
 
-*   **Notion connector**: Select the connector you created in step 2.
-*   **Database IDs**: The 32-character ID from each Notion URL (the hex string before `?v=`).
-*   **Slack connector**: *(Optional)* Select if you set one up in step 3.
-*   **Dry run**: Scrape and score everything, log what *would* be written, without touching Notion. On by default. Recommended for your first run.
-*   **SoV drop threshold**: Alert on Slack when SoV drops by this many percentage points. Default `5`.
-*   **Engines**: Select which AI search engines to monitor:
-    *   `google_ai_overview` — Google AI Overviews via nested Google Search Scraper (**No API key needed**).
-    *   `perplexity` — Perplexity AI via official API (`perplexityApiKey` with Sonar Pro model) or nested scraper fallback.
-    *   `openai_chatgpt` — ChatGPT via OpenAI API (`openaiApiKey` with GPT-4o model).
-    *   `openai_groq_oss` — OpenAI GPT-OSS 120B on Groq LPUs (`groqApiKey`).
-    *   `groq_compound` — Groq Compound Search via Groq API (`groqApiKey` with Groq search-grounded model).
-    *   `xai_grok` — xAI Grok via xAI API (`xaiApiKey` with Grok 2 model).
-*   **Proxy**: Residential proxy recommended for Google AI Overviews. Without one, search engines block automated queries.
+* **Notion connector**: Select your Notion connector from step 2.
+* **Monitoring Pack Database ID**: The 32-character ID from your monitoring pack Notion URL.
+* **Timeline Database ID**: The 32-character ID from your timeline Notion URL.
+* **Slack connector**: *(Optional)* Select your Slack connector to enable drop alerts.
+* **Slack Channel**: Target channel for alert cards (e.g. `#sov-alerts`). Default: `#general`.
+* **SoV Drop Threshold (%)**: Minimum percentage drop required to trigger a Slack alert. Default: `5`.
+* **Dry Run**: On by default. Scrapes and scores everything in the run log without writing to Notion or Slack.
+* **AI Search Engines**: Select which engines to query:
+  - `google_ai_overview` — Google AI Overviews via nested search scraper (**No API key needed**).
+  - `perplexity` — Perplexity Sonar API (`perplexityApiKey`).
+  - `openai_chatgpt` — OpenAI GPT-4o API (`openaiApiKey`).
+  - `xai_grok` — xAI Grok 2 API (`xaiApiKey`).
+  - `groq_compound` — Groq search-grounded compound API (`groqApiKey`).
+
+---
+
+## What it looks like
+
+![Monitoring pack in Notion](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/notion-database-ai-search-monitoring-pack-configuration.png)
+*Your monitoring pack in Notion. This is the only place you configure target prompts, brand names, and competitors.*
+
+![SoV timeline in Notion](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/notion-database-ai-search-share-of-voice-timeline-history.png)
+*Persistent Share-of-Voice timeline in Notion accumulating daily run snapshots with SoV%, CDS%, and RPS metrics.*
+
+![Slack drop alert](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/slack-share-of-voice-drop-alert-notification.png)
+*Automated Slack alert notification card dispatched to your channel when Share of Voice drops beyond the threshold.*
+
+![Apify Console input](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/apify-console-notion-mcp-connector-input-configuration.png)
+*One-click Notion and Slack MCP authorization. No API credentials pasted into code.*
+
+![Drop funnel run log](https://raw.githubusercontent.com/IshekKhal/ai-search-sov/main/assets/apify-console-ai-search-drop-funnel-telemetry-runlog.png)
+*Terminal drop funnel telemetry and audit summary isolating query health, proxy blocks, and competitor benchmarks.*
 
 ---
 
 ## Output
 
-One row per prompt × engine combination, in the dataset.
+Every run writes a snapshot row to Notion **and** returns per-query records in a standardized dataset:
 
-| Field | What it is |
+| Field | Description |
 | :--- | :--- |
 | `prompt` | The commercial search query that was evaluated |
-| `engine` | `google_ai_overview`, `perplexity`, `openai_chatgpt`, `openai_groq_oss`, `groq_compound`, or `xai_grok` |
-| `brandMentioned` | Whether the AI answer mentioned your brand by name |
-| `domainCited` | Whether the AI answer cited your domain in its sources |
-| `recommendationRank` | Your position in the AI's recommendation list (1 = first, null = not listed) |
-| `citedDomains` | All source domains the AI cited in its answer |
-| `competitorsFound` | Which of your named competitors appeared in the answer |
-| `displacedByCompetitor` | If a competitor holds the #1 position instead of you, which one |
-| `sentiment` | `Positive`, `Neutral`, `Negative`, or `Omitted` (not mentioned at all) |
-| `featureContext` | Context tags: what attributes the AI associated with your brand |
-| `engineStatus` | `ok_google_serp`, `ok_perplexity_api`, `ok_perplexity`, `ok_openai_chatgpt`, `ok_openai_groq_oss`, `ok_groq_compound`, `ok_xai_grok`, `blocked_unusual_traffic`, or `network_error` |
+| `engine` | `google_ai_overview`, `perplexity`, `openai_chatgpt`, `xai_grok`, or `groq_compound` |
+| `brandMentioned` | Boolean indicating whether your brand name was recommended |
+| `domainCited` | Boolean indicating whether your official domain was cited in sources |
+| `recommendationRank` | Position in the recommendation list (`1` = first, `null` = not recommended) |
+| `citedDomains` | Array of source domains cited in the AI response |
+| `winningCitationSources`| Full URLs referenced by the engine for citations |
+| `competitorsFound` | Array of named competitors that appeared in the response |
+| `displacedByCompetitor` | Name of the competitor occupying the #1 spot when you were displaced |
+| `sentiment` | Classification of the mention (`Positive`, `Neutral`, `Negative`, `Omitted`) |
+| `featureContext` | Contextual tags associated with your brand (e.g. `fast`, `expensive`, `scalable`) |
+| `engineStatus` | Diagnostic status code (e.g. `ok_groq_compound`, `blocked_unusual_traffic`) |
+| `responseDurationMs` | Network and generation latency in milliseconds |
 
-### Example row
+### Example dataset item
 
 ```json
 {
-  "timestamp": "2026-08-11T09:00:00.000Z",
-  "engine": "google_ai_overview",
+  "timestamp": "2026-08-15T01:00:00.000Z",
+  "engine": "groq_compound",
   "prompt": "best enterprise web scraping platform",
   "targetBrand": "Apify",
   "targetDomain": "apify.com",
   "brandMentioned": true,
   "domainCited": true,
-  "recommendationRank": 2,
-  "citedDomains": ["brightdata.com", "apify.com", "scraperapi.com"],
-  "winningCitationSources": ["https://brightdata.com/products", "https://apify.com/web-scraping"],
+  "recommendationRank": 1,
+  "citedDomains": ["apify.com", "brightdata.com", "scraperapi.com"],
+  "winningCitationSources": [
+    "https://apify.com/web-scraping",
+    "https://brightdata.com/products"
+  ],
   "competitorsFound": ["Bright Data", "ScraperAPI"],
-  "displacedByCompetitor": "Bright Data",
+  "displacedByCompetitor": null,
   "sentiment": "Positive",
-  "featureContext": ["robust", "reliable"],
-  "engineStatus": "ok_google_serp",
-  "responseDurationMs": 2340
+  "featureContext": ["cloud platform", "actor ecosystem", "reliable"],
+  "engineStatus": "ok_groq_compound",
+  "responseDurationMs": 1820
 }
 ```
 
-### Aggregate metrics (in RUN_SUMMARY)
-
-| Metric | What it means |
-| :--- | :--- |
-| **SoV%** | Percentage of prompts where the AI mentioned your brand |
-| **CDS%** | Percentage of prompts where the AI cited your domain in sources |
-| **RPS** | Recommendation Position Score: 10 for rank 1, 7 for rank 2–3, 4 for lower |
-| **deltaSoV** | Change from the previous run's SoV%. Negative = you are losing visibility |
-
 ---
 
-## Supported AI engines
+## Supported AI search engines
 
-| Engine | Execution Method | Model / Underlying Mechanism |
+| Engine | Grounding Method | Features |
 | :--- | :--- | :--- |
-| **Google AI Overview** | `Actor.call('apify/google-search-scraper')` | Google SERP with AI Overview extraction |
-| **Perplexity AI** | Direct API (`perplexityApiKey`) / Scraper Fallback | `sonar` (Lightweight, 85% cheaper) |
-| **OpenAI ChatGPT** | Direct API (`openaiApiKey`) | `gpt-4o-mini` (Lightweight, 94% cheaper) |
-| **xAI Grok** | Direct API (`xaiApiKey`) | `grok-2-mini` (Lightweight, 85% cheaper) |
-| **Groq Compound** | Direct API (`groqApiKey`) | `groq/compound` (Agentic Web Search, up to 10 tool calls) |
-| **OpenAI GPT-OSS on Groq** | Direct API (`groqApiKey`) | `openai/gpt-oss-120b` (120B Open-Weights Model on LPUs) |
-
----
-
-## Cost
-
-Each run makes one HTTP request per prompt × engine. A monitoring pack with 10 prompts across 2 engines = 20 requests.
-
-- **Compute**: ~128 MB RAM, 30 seconds per query. A 10-prompt run takes ~5 minutes. Well within Apify free tier.
-- **Proxy**: Residential proxy recommended for Google. ~0.01–0.03 USD per 20 requests depending on provider and plan.
-- **MCP connectors**: Reading and writing to Notion through the Apify MCP proxy is included in the platform — no additional cost.
-
-### Testing cost
-
-Your first dry run costs nothing beyond proxy bandwidth. The Notion connector read is a single API call. No writes happen during dry run.
+| **Google AI Overview** | Google SERP Scraping | No API key needed. Residential proxies recommended. |
+| **Perplexity AI** | Sonar Pro API (`sonar`) | Fast, native search grounding and citation URLs. |
+| **OpenAI ChatGPT** | GPT-4o API | Direct parametric and grounded reasoning evaluation. |
+| **xAI Grok** | Grok 2 API (`grok-2-mini`) | Fast, real-time web knowledge evaluation. |
+| **Groq Compound** | Groq Live Web Search | Search-grounded agentic workflow with citation domains. |
 
 ---
 
 ## What it does not do
 
-It does not optimize your content for AI engines. It measures your current visibility so you can decide what to optimize. For the optimization side, talk to your content team about structured data, citation-worthy content, and entity recognition.
+- It does not generate artificial reviews or manipulate LLM training data. It measures your authentic brand presence so you can steer your content and SEO strategy.
+- It cannot predict future non-deterministic responses with 100% certainty. AI models provide stochastic answers — schedule the Actor daily and monitor the 7-day trendline.
 
-It cannot tell you what the AI model "thinks" — only what it outputs for a specific prompt in a specific locale at a specific time. AI answers are non-deterministic. Run daily and look at the trend, not any single data point.
+---
+
+## Integrations
+
+Beyond Notion and Slack, output datasets can be pulled via the [Apify API](https://docs.apify.com/api/v2) or routed into Google Sheets, Airtable, Make, or Zapier webhooks.
+
+---
+
+Built by [Abhishek Khanra](https://apify.com/ishekofficial). Pay-per-use, no subscription required.
